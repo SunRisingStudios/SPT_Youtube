@@ -1,0 +1,92 @@
+﻿@model SPTEntities.Models.ManagerViewModel
+
+@{    
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Direct Reports</h2>
+<script type="text/javascript" src="~/Scripts/Library/manager.js"></script>
+<script>
+    var pctIncreaseGuidelines = '@Model.PctIncreaseGuidelines';
+</script>
+
+@using (Html.BeginForm("Index", "Manager", FormMethod.Post))
+{
+    <table class="table table-secondary table-striped margin-lv0">
+        <thead>
+            <tr>
+                <th>Employee Type</th>
+                <th>Total Amt</th>
+                <th>Amount Remaining</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i =0; i < Model.DistributionGuidelines.Count(); i++)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(x => Model.DistributionGuidelines[i].EmployeeTypeText) @Html.HiddenFor(x => Model.DistributionGuidelines[i].EmployeeTypeText)</td>
+                    <td>$<span id="DistributionTotal_@Model.DistributionGuidelines[i].EmployeeType">@Html.DisplayFor(x => Model.DistributionGuidelines[i].DistGuideTotal)</span> @Html.HiddenFor(x => Model.DistributionGuidelines[i].DistGuideTotal, new {  data_row = Model.DistributionGuidelines[i].EmployeeType })</td>
+                    <td>$<span id="DistributionAmt_@Model.DistributionGuidelines[i].EmployeeType">@Html.DisplayFor(x => Model.DistributionGuidelines[i].AmtRemaning)</span> @Html.HiddenFor(x => Model.DistributionGuidelines[i].AmtRemaning)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button class="btn btn-primary floatRight" name="SaveBtn" type="submit" value="SaveBtn">Save</button>
+    <table class="table table-primary table-striped margin-lv0">
+        <thead>
+            <tr>
+                <th>Employee Name</th>
+                <th>Hire Date</th>
+                <th>Job Title</th>
+                <th>Status</th>
+                <th>Type</th>
+                <th>Company</th>
+                <th>Grade</th>
+                <th>Annual Rate</th>
+                <th>Hourly Rate</th>
+                <th>New Rating</th>
+                <th>Min %</th>
+                <th>Max %</th>
+                <th>Increase Amount</th>
+                <th>Last Rating</th>
+                <th>Last Updated Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i =0; i < Model.ManagersEmployees.Count(); i++)
+            {
+            <tr>
+                @Html.HiddenFor(x => Model.ManagersEmployees[i].EmployeeId)
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].EmployeeName) @Html.HiddenFor(x => Model.ManagersEmployees[i].EmployeeName)</td>
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].HireDate) @Html.HiddenFor(x => Model.ManagersEmployees[i].HireDate)</td>
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].JobTitle) @Html.HiddenFor(x => Model.ManagersEmployees[i].JobTitle)</td>
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].FullPartTimeText) @Html.HiddenFor(x => Model.ManagersEmployees[i].FullPartTime) @Html.HiddenFor(x => Model.ManagersEmployees[i].FullPartTimeText)</td>
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].EmployeeTypeText) @Html.HiddenFor(x => Model.ManagersEmployees[i].EmployeeType) @Html.HiddenFor(x => Model.ManagersEmployees[i].EmployeeType)</td>
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].CompanyText) @Html.HiddenFor(x => Model.ManagersEmployees[i].Company) @Html.HiddenFor(x => Model.ManagersEmployees[i].CompanyText)</td>
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].Grade) @Html.HiddenFor(x => Model.ManagersEmployees[i].Grade)</td>
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].AnnualRate) @Html.HiddenFor(x => Model.ManagersEmployees[i].AnnualRate)</td>
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].HourlyRate) @Html.HiddenFor(x => Model.ManagersEmployees[i].HourlyRate)</td>
+                @if (Model.ManagersEmployees[i].CanEarnIncrease)
+                {
+                    <td>@Html.EditorFor(x => Model.ManagersEmployees[i].NewRating, new { htmlAttributes = new { @class = "form-control", data_status = Model.ManagersEmployees[i].FullPartTime, data_distKey = Model.ManagersEmployees[i].DistKeyId, data_quintile = Model.ManagersEmployees[i].Quintile } })</td>
+                    <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].MinPctIncrease, new { htmlAttributes = new { data_row = Model.ManagersEmployees[i].EmployeeType } })</td>
+                    <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].MaxPctIncrease, new { htmlAttributes = new { data_row = Model.ManagersEmployees[i].EmployeeType } })</td>
+                    <td>@Html.EditorFor(x => Model.ManagersEmployees[i].IncreaseAmount, new { htmlAttributes = new { @class = "form-control", data_row = Model.ManagersEmployees[i].EmployeeType } })</td>
+                }
+                else
+                {
+                    <td></td>
+                    <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].MinPctIncrease, new { htmlAttributes = new { data_row = Model.ManagersEmployees[i].EmployeeType } })</td>
+                    <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].MaxPctIncrease, new { htmlAttributes = new { data_row = Model.ManagersEmployees[i].EmployeeType } })</td>
+                    <td></td>
+                }
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].LastRating) @Html.HiddenFor(x => Model.ManagersEmployees[i].LastRating)</td>
+                <td>@Html.DisplayFor(x => Model.ManagersEmployees[i].LastUpdatedDate) @Html.HiddenFor(x => Model.ManagersEmployees[i].LastUpdatedDate)</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <button class="btn btn-secondary floatRight" name="CompleteReviewBtn" type="submit" value="CompleteReviewBtn">Complete Review</button>
+}
